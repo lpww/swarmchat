@@ -5,7 +5,7 @@ const memdb = require('memdb');
 
 const log = hyperlog(memdb());
 
-const hub = signalhub('swarm-example', ['localhost:8080']);
+const hub = signalhub('swarm-example', ['https://mafintosh.signalhub.com']);
 const swarm = createSwarm(hub);
 
 swarm.on('peer', (peer, id) => {

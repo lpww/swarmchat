@@ -15,4 +15,50 @@ swarm.on('peer', (peer, id) => {
   peer.pipe(latest).pipe(peer);
 });
 
-log.createReadStream({ live: true }).on('data', console.log);
+
+// chat
+
+const content = document.createElement('div');
+content.id = 'content';
+document.body.appendChild(content);
+
+const chats = document.createElement('div');
+chats.id = 'chats';
+content.appendChild(chats);
+
+const chatForm = document.createElement('form');
+chatForm.id = 'chat-form';
+chatForm.name = 'chat-form';
+content.appendChild(chatForm);
+
+const chatMessage = document.createElement('input');
+chatMessage.id = 'chat-message';
+chatForm.appendChild(chatMessage);
+
+const chatSubmit = document.createElement('button');
+chatSubmit.id = 'chat-submit';
+chatSubmit.type = 'submit';
+chatForm.appendChild(chatSubmit);
+
+
+chatForm.addEventListener('submit', chat);
+
+function chat(e) {
+  e.preventDefault();
+
+  const message = chatMessage.value;
+  chatMessage.value = '';
+  log.append(message);
+}
+
+
+log.createReadStream({ live: true }).on('data', function (data) {
+  appendChat(data.value.toString());
+});
+
+function appendChat(message) {
+  const chat = document.createElement('div');
+  chat.innerHTML = message;
+  chats.appendChild(chat);
+}
+

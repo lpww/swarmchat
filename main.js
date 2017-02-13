@@ -3,9 +3,12 @@ const signalhub = require('signalhub');
 const hyperlog = require('hyperlog');
 const memdb = require('memdb');
 
+
+// swarm
+
 const log = hyperlog(memdb());
 
-const hub = signalhub('swarm-example', ['localhost:8080']);
+const hub = signalhub('swarm-example', ['https://mafintosh.signalhub.com']);
 const swarm = createSwarm(hub);
 
 swarm.on('peer', (peer, id) => {

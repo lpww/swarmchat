@@ -2,13 +2,20 @@
   "name": "swarmcast",
   "version": "2.0.0",
   "scripts": {
-    "watch": "watchify main.js -o public/bundle.js -dv"
+    "watch": "watchify -d main.js -o public/bundle.js -dv -t [ babelify --presets [ es2015 ] ]"
   },
   "dependencies": {
+    "events": "^1.1.1",
     "hyperlog": "^4.12.1",
     "memdb": "^1.3.1",
+    "shasum": "^1.0.2",
     "signalhub": "^4.8.0",
-    "watchify": "3.9.0",
+    "subleveldown": "^2.1.0",
     "webrtc-swarm": "^2.8.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.22.0",
+    "babelify": "^7.3.0",
+    "watchify": "^3.9.0"
   }
 }

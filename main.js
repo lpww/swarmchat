@@ -20,6 +20,7 @@ chat.on('disconnect', function (peer, id) {
 
 chat.on('leave', function (channel) {
   console.log('you left channel', channel);
+  removeChildren(chats);
 });
 
 chat.on('say', function (channel, row) {
@@ -82,4 +83,10 @@ function appendChat(message) {
   const chat = document.createElement('div');
   chat.innerHTML = message;
   chats.appendChild(chat);
+}
+
+function removeChildren(node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
 }

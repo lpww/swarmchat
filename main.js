@@ -1,29 +1,53 @@
-const createSwarm = require('webrtc-swarm');
-const signalhub = require('signalhub');
-const hyperlog = require('hyperlog');
 const memdb = require('memdb');
+const randomBytes = require('randombytes');
 
+const Chat = require('./index');
 
-// swarm
+const nym = randomBytes(3).toString('hex');
+const chat = new Chat(nym, memdb());
 
-const log = hyperlog(memdb());
-
-const hub = signalhub('swarm-example', ['https://mafintosh.signalhub.com']);
-const swarm = createSwarm(hub);
-
-swarm.on('peer', (peer, id) => {
-  console.log('connected to a new peer:', id);
-  console.log('total peers:', swarm.peers.length);
-  const latest = log.replicate({ live: true });
-  peer.pipe(latest).pipe(peer);
+chat.on('join', function (channel) {
+  console.log('you joined channel', channel);
 });
 
+chat.on('peer', function (peer, id) {
+  console.log('a peer joined the channel', id, peer);
+});
+
+chat.on('disconnect', function (peer, id) {
+  console.log('a peer left the channel', id, peer);
+});
+
+chat.on('leave', function (channel) {
+  console.log('you left channel', channel);
+});
+
+chat.on('say', function (channel, row) {
+  console.log('channel received a new chat', channel, row);
+  appendChat(row.value.message);
+});
+
+chat.join('default');
 
 // chat
 
-const content = document.createElement('div');
-content.id = 'content';
-document.body.appendChild(content);
+const content = document.getElementById('content');
+
+const join = document.createElement('button');
+join.id = 'join';
+join.innerHTML = 'join';
+content.appendChild(join);
+join.addEventListener('click', () => {
+  chat.join('default');
+});
+
+const leave = document.createElement('button');
+leave.id = 'leave';
+leave.innerHTML = 'leave';
+content.appendChild(leave);
+leave.addEventListener('click', () => {
+  chat.leave('default')
+});
 
 const chats = document.createElement('div');
 chats.id = 'chats';
@@ -40,28 +64,22 @@ chatForm.appendChild(chatMessage);
 
 const chatSubmit = document.createElement('button');
 chatSubmit.id = 'chat-submit';
+chatSubmit.innerHTML = 'send';
 chatSubmit.type = 'submit';
 chatForm.appendChild(chatSubmit);
 
+chatForm.addEventListener('submit', say);
 
-chatForm.addEventListener('submit', chat);
-
-function chat(e) {
+function say(e) {
   e.preventDefault();
 
   const message = chatMessage.value;
   chatMessage.value = '';
-  log.append(message);
+  chat.say('default', message);
 }
-
-
-log.createReadStream({ live: true }).on('data', function (data) {
-  appendChat(data.value.toString());
-});
 
 function appendChat(message) {
   const chat = document.createElement('div');
   chat.innerHTML = message;
   chats.appendChild(chat);
 }
-

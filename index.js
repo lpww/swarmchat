@@ -7,7 +7,9 @@ const wswarm = require('webrtc-swarm');
 const debounce = require('lodash.debounce');
 
 class Chat extends EventEmitter {
+
   constructor(nym, db) {
+
     super();
     this.db = db;
     this.logs = {};
@@ -17,7 +19,7 @@ class Chat extends EventEmitter {
     this.ondisconnect = {};
     this.onclose = {};
     this.nym = nym;
-    // this.trackers = ['https://swarmcast-signalhub.herokuapp.com/']; // doesn't seem to work properly - use localhost for development
+    // this.trackers = ['https://swarmcast-signalhub.herokuapp.com/'];
     this.trackers = ['localhost:8080'];
   }
 
@@ -43,18 +45,18 @@ class Chat extends EventEmitter {
 
     peers[channel] = {};
 
-    onpeer[channel] = function (peer, id) {
+    onpeer[channel] = (peer, id) => {
       this.emit('peer', peer, id);
       peers[channel][id] = peer;
       peer.pipe(logs[channel].replicate({ live: true })).pipe(peer);
-    }.bind(this);
+    };
 
-    ondisconnect[channel] = function (peer, id) {
+    ondisconnect[channel] = (peer, id) => {
       if (peers[channel][id]) {
         this.emit('disconnect', peer, id);
         delete peers[channel][id];
       }
-    }.bind(this);
+    };
 
     swarm.on('peer', onpeer[channel]);
     swarm.on('disconnect', ondisconnect[channel]);
@@ -100,7 +102,7 @@ class Chat extends EventEmitter {
       message: message
     };
 
-    logs[channel].append(data, (err, node) => {});
+    logs[channel].append(data);
   }
 }
 

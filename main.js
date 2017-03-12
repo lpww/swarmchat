@@ -25,8 +25,9 @@ chat.on('leave', function (channel) {
 
 chat.on('say', function (channel, row) {
   console.log('channel received a new chat', channel, row);
-  appendChat(row.value.message);
+  appendChat(row.value);
 });
+
 
 chat.join('default');
 
@@ -79,9 +80,9 @@ function say(e) {
   chat.say('default', message);
 }
 
-function appendChat(message) {
+function appendChat(data) {
   const chat = document.createElement('div');
-  chat.innerHTML = message;
+  chat.innerHTML = `${data.who}: ${data.message}`;
   chats.appendChild(chat);
 }
 

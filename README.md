@@ -1,1 +1,1 @@
-p2p videocast with text chat inspired by [spellcast](https://github.com/substack/spellcast) and [chatwizard](https://github.com/substack/chatwizard)
+p2p chat inspired by [chatwizard](https://github.com/substack/chatwizard)
